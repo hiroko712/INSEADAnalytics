@@ -87,10 +87,17 @@ pnl_plot(SPY)
 3. *(Extra points)* What if we want to also see the returns of another company, say Yahoo!, in the same period? Can you get that data and report the statistics for Yahoo!'s stock, too? 
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+Question 1.
+Line 8 saying `mytickers = c("SPY", "AAPL")` in `dataSet1.R`
+
+Question 2.
+The cumulative returns is `r round(100*sum(StockReturns[,2]),1)`%.
+The average daily returns is `r round(100*mean(StockReturns[,2]),3)`%.
+The standard deviation of the daily returns is `r round(100*sd(StockReturns[,2]),3)`%;
+
+Question 3.
+Change the line8 in `dataSet1.R` to `mytickers = c("SPY", "AAPL", "YHOO")` and extract the data for Yahoo! as it was done for Apple in Q2.
 
 <hr>
 <hr>
@@ -119,7 +126,6 @@ names(portfolio) <- rownames(StockReturns)
 pnl_plot(portfolio)
 ```
 
-
 We can also transpose the matrix of returns to create a new "horizontal" matrix. Let's call this matrix (variable name) transposedData. We can do so using this command:  `transposedData = t(StockReturns)`. 
 
 #### Questions
@@ -128,10 +134,29 @@ We can also transpose the matrix of returns to create a new "horizontal" matrix.
 2. Based on the help for the R function *apply* (`help(apply)`), can you create again the portfolio of S&P and Apple and plot the returns in a new figure below?
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+Question 1.
+
+First let's create the new horixontal matrix, transposedData.
+
+```{r eval=TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+transposedData = t(StockReturns)
+```
+
+Then we can use `nrow(transposedData)` to get the number of rows, which is `r nrow(transposedData)`, and we can use `ncol(transposedData)` to get the number of columns, which is `r ncol(transposedData)`.
+
+Question 2.
+
+We need to take mean of columns of the transposed matrix.
+
+```{r eval=TRUE, echo=TRUE, error = FALSE, warning=FALSE,message=FALSE,results='asis'}
+transposed_portfolio = apply(transposedData,2,mean)
+names(transposed_portfolio) <- rownames(StockReturns)
+```
+
+```{r echo=FALSE, comment=NA, warning=FALSE, message=FALSE,results='asis',fig.align='center', fig=TRUE}
+pnl_plot(transposed_portfolio)
+```
 
 <hr>
 <hr>
@@ -146,10 +171,12 @@ This is an important step and will get you to think about the overall process on
 2. *(Extra Exercise)*  Can you get the returns of a few companies and plot the returns of an equal weighted portfolio with those companies during some period you select? 
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+Question 1.
+We need to change the line 9 `startDate = "2001-01-01"` in `dataSet1.R`
+
+Question 2.
+Yes, by changing the line 8 `mytickers = c("SPY", "AAPL")` in `dataSet1.R`
 
 <hr>
 <hr>
@@ -158,7 +185,7 @@ This is an important step and will get you to think about the overall process on
 
 Finally, one can read and write data in .CSV files. For example, we can save the first 20 days of data for S&P and Apple in a file using the command:
 
-```{r eval = TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
+```{r eval=TRUE, echo=TRUE, comment=NA, warning=FALSE, message=FALSE,results='asis'}
 write.csv(StockReturns[1:20,c("SPY","AAPL")], file = "twentydays.csv", row.names = TRUE, col.names = TRUE) 
 ```
 
@@ -180,10 +207,9 @@ myData + StockReturns[1:40,]
 ```
 
 **Your Answers here:**
-<br>
-<br>
-<br>
-<br>
+
+Question 1.
+It returns `[1] 20`
 
 <hr>
 <hr>
@@ -196,7 +222,7 @@ Can you now load another dataset from some CSV file and report some basic statis
 
 ### Creating Interactive Documents
 
-Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html).All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, make the markdown output to be "html_document", and then press "Run Document". 
+Finally, just for fun, one can add some interactivity in the report using [Shiny](http://rmarkdown.rstudio.com/authoring_shiny.html). All one needs to do is set the eval flag of the code chunk below (see the .Rmd file) to "TRUE", add the line "runtime: shiny" at the very begining of the .Rmd file, make the markdown output to be "html_document", and then press "Run Document". 
 
 ```{r, eval=FALSE, echo = TRUE}
 sliderInput("startdate", "Starting Date:", min = 1, max = length(portfolio), 
