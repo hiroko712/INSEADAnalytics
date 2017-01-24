@@ -58,9 +58,9 @@ For more information on downloading finance data from the internet as well as on
 #### Optional Question 
 
 1. Can you find some interesting finance related R package or github repository? 
+
 **Your Answers here:**
-<br>
-<br>
+Yes, there are many.
 
 <hr>
 <hr>
