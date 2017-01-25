@@ -83,7 +83,7 @@ There are many ways to get futures data. For example, one can use  the [Quandl p
 Let's load the data and see what we have. 
 
 ```{r echo=TRUE}
-source("helpersSet2.R")
+suppressPackageStartupMessages(source("helpersSet2.R"))
 load("data/FuturesTrendFollowingData.Rdata")
 ```
 
