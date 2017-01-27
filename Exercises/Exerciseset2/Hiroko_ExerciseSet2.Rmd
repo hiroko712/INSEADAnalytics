@@ -155,20 +155,63 @@ iprint.df(show_data, scale=TRUE)
 2. What are the highest weights (in absolute value) of the first principal component portfolio above on the `r ncol(futures_data)` futures? 
 3. Can we interpret the first 10 components? How would you call these factors?
 4. Can you now generate the principal components and scree plot using only: a) the pre-crisis bull market years (e.g. only using the data between November 1, 2002, and October 1, 2007)?  b) the financial crisis years (e.g. only using the data between October 1, 2007 and  March 1, 2009), (Hint: you can select subsets of the data using for example the command `crisis_data` `=` `futures_data[` `as.Date(rownames(futures_data))` `>` `"2007-10-01"` `&` `as.Date(rownames(futures_data))` `<` `"2009-03-01"` `,` `]`)
-5. Based on your analysis in question 3, please discuss any differences you observe about the futures returns during  bull and bear markets.  What implications may these results have? What do the results imply about how assets are correlated during bear years compared to bull years? 
+5. Based on your analysis in question 3, please discuss any differences you observe about the futures returns during bull and bear markets. What implications may these results have? What do the results imply about how assets are correlated during bear years compared to bull years?
 
 **Answers**
 
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
+1. We need 6 components to explain 50% of the variance.
+
+1. The both 5yr T-notes and 10yr T-notes have the highest weights of 0.93.
+
+1. 10 components
+    1. Component 1:  North American government bonds
+    1. Component 2:  Currency rate
+    1. Component 3:  European stock markets
+    1. Component 4:  North American stock markets
+    1. Component 5:  European government bonds
+    1. Component 6:  Oil
+    1. Component 7:  Non-ferrous Metal (Cu, Ni, Zn)
+    1. Component 8:  Grain & Beans
+    1. Component 9:  Noble Metal
+    1. Component 10:  Asian stock markets
+
+1.
+    - a) Bear markets
+
+```{r echo=TRUE}
+Bear_data = futures_data[as.Date(rownames(futures_data))>"2002-11-01" & as.Date(rownames(futures_data))<"2007-10-01",]
+Bear_Variance_Explained_Table_results<-PCA(Bear_data, graph=FALSE)
+Bear_Variance_Explained_Table<-Bear_Variance_Explained_Table_results$eig
+colnames(Bear_Variance_Explained_Table)<-c("Eigenvalue", 
+  "Pct of explained variance", "Cumulative pct of explained variance")
+Bear_eigenvalues  <- Bear_Variance_Explained_Table[, "Eigenvalue"]
+```
+
+```{r}
+bear_df           <- cbind(as.data.frame(Bear_eigenvalues), c(1:length(Bear_eigenvalues)), rep(1, length(Bear_eigenvalues)))
+colnames(bear_df) <- c("eigenvalues", "components", "abline")
+iplot.df(melt(bear_df, id="components"))
+```
+
+    - b) Bull markets
+
+```{r echo=TRUE}
+Crisis_data = futures_data[as.Date(rownames(futures_data))>"2007-10-01" & as.Date(rownames(futures_data))<"2009-03-01",]
+Crisis_Variance_Explained_Table_results<-PCA(Crisis_data, graph=FALSE)
+Crisis_Variance_Explained_Table<-Crisis_Variance_Explained_Table_results$eig
+colnames(Crisis_Variance_Explained_Table)<-c("Eigenvalue", 
+  "Pct of explained variance", "Cumulative pct of explained variance")
+Crisis_eigenvalues  <- Crisis_Variance_Explained_Table[, "Eigenvalue"]
+```
+
+```{r}
+crisis_df           <- cbind(as.data.frame(Crisis_eigenvalues), c(1:length(Crisis_eigenvalues)), rep(1, length(Crisis_eigenvalues)))
+colnames(crisis_df) <- c("eigenvalues", "components", "abline")
+iplot.df(melt(crisis_df, id="components"))
+```
+
+1. Futures returns look more correlated during bull market than during bear market
+
 
 # A Simple Futures Trend Following Strategy
 
@@ -230,16 +273,9 @@ How does this compare with **existing CTA products** such as [this one from Soci
 
 **Answers**
 
-*
-*
-*
-*
-*
-*
-*
-*
-*
-*
+1. The first step initializes the signal to be zero. The second step creates different "window lengths" over which moving average are taken. The third step calculates the moving average and adds the signs of the moving average. The fourth step scales this sum across all futures so that the sum of their absolute value across all futures is 1. The fifth step simply gives column name to the signal data. The sixth step applies the strategy using the weight from 2 days ago.
+
+2. If I increase the "window lengths," e.g., `MAfreq<-seq(10,490,by=20)`, the strategy becomes less sensitive to trends and less effective. On the other hand, even if I change the number of different "window lengths," e.g., `MAfreq<-seq(10,250,by=60)`, the overall performance of the strategy does not change a lot.
 
 # A class competition
 
